@@ -1,6 +1,7 @@
 #include <NewPing.h>  // Rangefinder
 #include <Servo.h>
 
+
 // Motor A
 int dir1PinA = 2; // IN1
 int dir2PinA = 3; //IN2
@@ -18,7 +19,7 @@ int PMW2 = 0; // Set motor speed to 0
 #define EchoPin 11
 #define MaxDistance 200
 
-
+NewPing sonar (TriggerPin, EchoPin, MaxDistance);
 
 
 void setup() {  // Setup runs once per reset
@@ -38,116 +39,55 @@ pinMode(speedPinB,OUTPUT);
 
 void forward (){
   analogWrite(speedPinB, 100);
+  digitalWrite(dir1PinB, LOW);
+  digitalWrite(dir2PinB, HIGH);
+  analogWrite(speedPinA, 100);
+  digitalWrite(dir1PinA, LOW);
+  digitalWrite(dir2PinA, HIGH);
+}
+
+void stopp (){
+  analogWrite(speedPinB, 0);
   digitalWrite(dir1PinB, HIGH);
   digitalWrite(dir2PinB, LOW);
-  analogWrite(speedPinA, 100);
+  analogWrite(speedPinA, 0);
   digitalWrite(dir1PinA, HIGH);
   digitalWrite(dir2PinA, LOW);
+}
+
+void turnRight (){
+  analogWrite(speedPinB, 100);
+  digitalWrite(dir1PinB, HIGH);
+  digitalWrite(dir2PinB, LOW);
+  analogWrite(speedPinA, 0);
+  digitalWrite(dir1PinA, LOW);
+  digitalWrite(dir2PinA, LOW);
+
 }
 
 void loop() {
 
 // Initialize the Serial interface:
 
-if (Serial.available() > 0) {
-int inByte = Serial.read();
-int speed; // Local variable
-
-if (sonar.ping_cm() > 50){
+Serial.println(sonar.ping_cm());
+/*
+while (sonar.ping_cm() > 50){
 forward();
+Serial.println(sonar.ping_cm());
 }
+*/
 
-switch (inByte) {
-
-//______________Motor 1______________
-
-case '1': // Motor 1 Forward
-analogWrite(speedPinA, 100);//Sets speed variable via PWM
-digitalWrite(dir1PinA, LOW);
-digitalWrite(dir2PinA, HIGH);
-Serial.println("Motor 1 Forward"); // Prints out “Motor 1 Forward” on the serial monitor
-Serial.println("   "); // Creates a blank line printed on the serial monitor
-break;
-
-case '2': // Motor 1 Stop (Freespin)
-analogWrite(speedPinA, 0);
-digitalWrite(dir1PinA, LOW);
-digitalWrite(dir2PinA, HIGH);
-Serial.println("Motor 1 Stop");
-Serial.println("   ");
-break;
-
-case '3': // Motor 1 Reverse
-analogWrite(speedPinA, 100);
-digitalWrite(dir1PinA, HIGH);
-digitalWrite(dir2PinA, LOW);
-Serial.println("Motor 1 Reverse");
-Serial.println("   ");
-break;
-
-//______________Motor 2______________
-
-case '4': // Motor 2 Forward
-analogWrite(speedPinB, 100);
-digitalWrite(dir1PinB, LOW);
-digitalWrite(dir2PinB, HIGH);
-Serial.println("Motor 2 Forward");
-Serial.println("   ");
-break;
-
-case '5': // Motor 1 Stop (Freespin)
-analogWrite(speedPinB, 0);
-digitalWrite(dir1PinB, LOW);
-digitalWrite(dir2PinB, HIGH);
-Serial.println("Motor 2 Stop");
-Serial.println("   ");
-break;
-
-case '6': // Motor 2 Reverse
-analogWrite(speedPinB, 100);
-digitalWrite(dir1PinB, HIGH);
-digitalWrite(dir2PinB, LOW);
-Serial.println("Motor 2 Reverse");
-Serial.println("   ");
-break;
-
-case '7': // Motor 1 + 2 Reverse
-analogWrite(speedPinB, 100);
-digitalWrite(dir1PinB, HIGH);
-digitalWrite(dir2PinB, LOW);
-analogWrite(speedPinA, 100);
-digitalWrite(dir1PinA, HIGH);
-digitalWrite(dir2PinA, LOW);
-delay(1000);
-analogWrite(speedPinB, 100);
-digitalWrite(dir1PinB, LOW);
-digitalWrite(dir2PinB, LOW);
-analogWrite(speedPinA, 100);
-digitalWrite(dir1PinA, LOW);
-digitalWrite(dir2PinA, HIGH);
-delay(1000);
-analogWrite(speedPinB, 100);
-digitalWrite(dir1PinB, LOW);
-digitalWrite(dir2PinB, HIGH);
-analogWrite(speedPinA, 100);
-digitalWrite(dir1PinA, LOW);
-digitalWrite(dir2PinA, HIGH);
-delay(1000);
-analogWrite(speedPinB, 0);
-digitalWrite(dir1PinB, LOW);
-digitalWrite(dir2PinB, LOW);
-analogWrite(speedPinA, 0);
-digitalWrite(dir1PinA, LOW);
-digitalWrite(dir2PinA, LOW);
-
-
-break;
-
-default:
-// turn all the connections off if an unmapped key is pressed:
-for (int thisPin = 2; thisPin < 11; thisPin++) {
-digitalWrite(thisPin, LOW);
-}
+if (sonar.ping_cm() < 50){
+  stopp();
+  delay(500);
+  while(sonar.ping_cm() < 50){
+  turnRight();
   }
-    }
-      }
+}
+else if (sonar.ping_cm() > 50){
+  forward();
+}
+
+
+
+}
