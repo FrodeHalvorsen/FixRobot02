@@ -1,8 +1,6 @@
 #include <NewPing.h>  // Rangefinder
 #include <Servo.h>
 
-
-
 // Motor A
 int dir1PinA = 2; // IN1
 int dir2PinA = 3; //IN2
@@ -20,7 +18,7 @@ int PMW2 = 0; // Set motor speed to 0
 #define EchoPin 11
 #define MaxDistance 200
 
-NewPing sonar (TriggerPin, EchoPinm MaxDistance);
+
 
 
 void setup() {  // Setup runs once per reset
@@ -38,6 +36,14 @@ pinMode(speedPinB,OUTPUT);
 
 }
 
+void forward (){
+  analogWrite(speedPinB, 100);
+  digitalWrite(dir1PinB, HIGH);
+  digitalWrite(dir2PinB, LOW);
+  analogWrite(speedPinA, 100);
+  digitalWrite(dir1PinA, HIGH);
+  digitalWrite(dir2PinA, LOW);
+}
 
 void loop() {
 
@@ -47,6 +53,9 @@ if (Serial.available() > 0) {
 int inByte = Serial.read();
 int speed; // Local variable
 
+if (sonar.ping_cm() > 50){
+forward();
+}
 
 switch (inByte) {
 
