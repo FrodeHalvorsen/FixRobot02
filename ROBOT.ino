@@ -1,28 +1,25 @@
-//Code by Reichenstein7 (thejamerson.com)
+#include <NewPing.h>  // Rangefinder
+#include <Servo.h>
 
-//Keyboard Controls:
-//
-// 1 -Motor 1 Left
-// 2 -Motor 1 Stop
-// 3 -Motor 1 Right
-//
-// 4 -Motor 2 Left
-// 5 -Motor 2 Stop
-// 6 -Motor 2 Right
 
-// Declare L298N Dual H-Bridge Motor Controller directly since there is not a library to load.
 
 // Motor 1
-int dir1PinA = 2;
-int dir2PinA = 3;
-int speedPinA = 9; // Needs to be a PWM pin to be able to control motor speed
-int PWM1 = 0;
+int dir1PinA = 2; // IN1
+int dir2PinA = 3; //IN2
+int speedPinA = 9; // ENA
+int PWM1 = 0; // Set motor speed to 0
 
 // Motor 2
-int dir1PinB = 4;
-int dir2PinB = 5;
-int speedPinB = 10; // Needs to be a PWM pin to be able to control motor speed
-int PMW2 = 0;
+int dir1PinB = 4; //IN3
+int dir2PinB = 5; //IN4
+int speedPinB = 10; // ENB
+int PMW2 = 0; // Set motor speed to 0
+
+// Rangefinder HC-SR04
+#define TriggerPin 12
+#define EchoPin 11
+#define MaxDistance 200
+
 
 
 void setup() {  // Setup runs once per reset
