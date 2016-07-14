@@ -1,7 +1,6 @@
 #include <NewPing.h>  // Rangefinder
 #include <Servo.h>
 
-
 // Motor A
 int dir1PinA = 2; // IN1
 int dir2PinA = 3; //IN2
@@ -19,6 +18,16 @@ int PMW2 = 0; // Set motor speed to 0
 #define EchoPin 11
 #define MaxDistance 200
 
+int scanList = 0; // 0, 30, 90, 120, 150, 180 deg
+int scanCount = 6;
+
+// Servo
+Servo servoA;
+Servo servoB;
+int servoAPos = 0;
+int servoBPos = 0;
+int servoBScan[6] = {0,30,90,120,150,180};
+
 NewPing sonar (TriggerPin, EchoPin, MaxDistance);
 
 
@@ -34,6 +43,11 @@ pinMode(speedPinA,OUTPUT);
 pinMode(dir1PinB,OUTPUT);
 pinMode(dir2PinB,OUTPUT);
 pinMode(speedPinB,OUTPUT);
+
+servoA.attach(A0);
+servoB.attach(A1);
+servoA.write(0);
+servoB.write(0);
 
 }
 
@@ -62,6 +76,18 @@ void turnRight (){
   analogWrite(speedPinA, 0);
   digitalWrite(dir1PinA, LOW);
   digitalWrite(dir2PinA, LOW);
+}
+
+void search (){
+  stopp();
+  servoA.write(180);
+  for (int servoBPos = 0; servoBPos < scanCount; servoBPos ++){
+    servoB.write(servoBScan[servoBPos]);
+    delay(100);
+  }
+
+
+
 
 }
 
